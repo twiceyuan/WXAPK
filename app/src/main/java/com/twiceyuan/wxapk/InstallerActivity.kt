@@ -38,5 +38,6 @@ class InstallerActivity : Activity() {
         installerIntent.setDataAndType(paramUri, "application/vnd.android.package-archive")
         installerIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(installerIntent)
+        finish()
     }
 }
