@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">微信安装 APK</string>
+    <string name="app_name">微信APK补丁</string>
     <string name="apk_prompt">直接在微信中打开接受到的 APK 即可</string>
 </resources>
