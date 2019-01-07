@@ -1,6 +1,5 @@
 package com.twiceyuan.wxapk
 
-import android.app.Activity
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
@@ -15,7 +14,7 @@ import java.io.FileOutputStream
  *
  * 安装意图分发 apk.1 -> apk installer
  */
-class InstallerActivity : Activity() {
+class InstallerActivity : PermissionHandlerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,22 +49,30 @@ class InstallerActivity : Activity() {
     }
 
     private fun install(paramUri: Uri) {
-        val newUri = convertToInsideUri(paramUri) ?: return
-        val installerIntent = Intent(Intent.ACTION_VIEW)
-        installerIntent.setDataAndType(newUri, "application/vnd.android.package-archive")
-        installerIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(installerIntent)
-        finish()
+        fun installAction() {
+            val newUri = paramUri.convertToInsideUri() ?: return
+            val installerIntent = Intent(Intent.ACTION_VIEW)
+            installerIntent.setDataAndType(newUri, Constants.INTENT_TYPE_INSTALL)
+            installerIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(installerIntent)
+            finish()
+        }
+
+        // 微信 7.0 以下使用的是 file uri，需要申请文件读取权限才能读取创建临时文件
+        when (paramUri.scheme) {
+            "file" -> requestStorageReadPermission { installAction() }
+            "content" -> installAction()
+        }
     }
 
     // 转换为内部文件的 Uri，方便进行改名
-    private fun convertToInsideUri(outsideUri: Uri): Uri? {
-        val inputStream = contentResolver.openInputStream(outsideUri) ?: return null
+    private fun Uri.convertToInsideUri(): Uri? {
+        val inputStream = contentResolver.openInputStream(this) ?: return null
         val tempDir = getExternalFilesDir(TEMP_APK_PATH) ?: return null
-        val tempApkFile = File.createTempFile(outsideUri.lastPathSegment, "apk", tempDir)
+        val tempApkFile = File.createTempFile(lastPathSegment, "apk", tempDir)
         val outputStream = FileOutputStream(tempApkFile)
         inputStream.copyTo(outputStream)
         inputStream.close()
-        return Uri.fromFile(tempApkFile)
+        return (Uri.fromFile(tempApkFile))
     }
 }
