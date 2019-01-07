@@ -2,10 +2,11 @@ package com.twiceyuan.wxapk
 
 import android.app.Activity
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.os.StrictMode
+import com.twiceyuan.wxapk.Constants.TEMP_APK_PATH
 import java.io.File
 import java.io.FileOutputStream
 
@@ -20,10 +21,21 @@ class InstallerActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        registerInstallReceiver()
+
         val builder = StrictMode.VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
 
         intent?.data?.let { install(it) }
+    }
+
+    // 注册安装结束的事件监听，用于清除缓存文件
+    private fun registerInstallReceiver() {
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
+        intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED)
+        intentFilter.addDataScheme("package")
+        applicationContext.registerReceiver(ApkInstallCompleteReceiver(), intentFilter)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -46,14 +58,14 @@ class InstallerActivity : Activity() {
         finish()
     }
 
+    // 转换为内部文件的 Uri，方便进行改名
     private fun convertToInsideUri(outsideUri: Uri): Uri? {
         val inputStream = contentResolver.openInputStream(outsideUri) ?: return null
-        val externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-        val downloadPath = File.createTempFile(outsideUri.lastPathSegment, "apk", externalFilesDir)
-
-        val outputStream = FileOutputStream(downloadPath)
+        val tempDir = getExternalFilesDir(TEMP_APK_PATH) ?: return null
+        val tempApkFile = File.createTempFile(outsideUri.lastPathSegment, "apk", tempDir)
+        val outputStream = FileOutputStream(tempApkFile)
         inputStream.copyTo(outputStream)
         inputStream.close()
-        return Uri.fromFile(downloadPath)
+        return Uri.fromFile(tempApkFile)
     }
 }
