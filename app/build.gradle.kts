@@ -13,8 +13,8 @@ android {
         applicationId = "com.twiceyuan.wxapk"
         minSdkVersion(16)
         targetSdkVersion(28)
-        versionCode = 3
-        versionName = "1.2"
+        versionCode = 4
+        versionName = "1.3"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
