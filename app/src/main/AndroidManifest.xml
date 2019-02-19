@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="file" />
-                <data android:mimeType="*/apk.1" />
+                <data android:mimeType="application/apk.1" />
                 <data android:scheme="content" />
                 <data android:host="*" />
             </intent-filter>
