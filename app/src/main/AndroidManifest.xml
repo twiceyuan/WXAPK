@@ -36,6 +36,19 @@
                 <data android:host="*" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ShadowActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:host="twiceyuan.com" />
+                <data android:path="/wxapk-settings" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
