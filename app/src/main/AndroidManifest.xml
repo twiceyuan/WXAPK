@@ -32,6 +32,10 @@
 
                 <data android:scheme="file" />
                 <data android:mimeType="application/apk.1" />
+                <data android:mimeType="application/apk.1.1" />
+                <data android:mimeType="application/apk.1.1.1" />
+                <data android:mimeType="application/apk.1.1.1.1" />
+                <data android:mimeType="application/apk.1.1.1.1.1" />
                 <data android:scheme="content" />
                 <data android:host="*" />
             </intent-filter>
