@@ -23,15 +23,11 @@ android {
     }
 
     applicationVariants.all { variant ->
-        def buildTypeName = variant.buildType.name
-        if (buildTypeName == "release") {
-            variant.outputs.all { output ->
-                def outputFile = output.outputFile
-                if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                    def version = "v${defaultConfig.versionName}(${defaultConfig.versionCode})"
-                    outputFileName = "WXAPK-${version}-${buildTypeName}.apk"
-                }
-            }
+        if (flavorName != "release") return
+        outputs.forEach {
+            def buildTypeName = variant.buildType.name
+            def version = "$versionName($versionCode)"
+            it.outputFileName = "WXAPK-${version}-${buildTypeName}.apk"
         }
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">微信APK补丁</string>
+    <string name="app_name">APK.1安装器</string>
     <string name="apk_prompt">直接在微信中打开接收到的 APK 即可</string>
     <string name="show_in_launcher">显示 Launcher 图标</string>
     <string name="hide_in_launcher">隐藏 Launcher 图标</string>
