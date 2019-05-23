@@ -32,9 +32,32 @@
 
                 <data android:scheme="file" />
                 <data android:mimeType="application/apk.1" />
+                <data android:mimeType="application/apk.1.1" />
+                <data android:mimeType="application/apk.1.1.1" />
+                <data android:mimeType="application/apk.1.1.1.1" />
+                <data android:mimeType="application/apk.1.1.1.1.1" />
                 <data android:scheme="content" />
                 <data android:host="*" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ShadowActivity"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="wxapk"
+                    android:path="/settings"
+                    android:scheme="wxapk" />
+
+            </intent-filter>
+
         </activity>
     </application>
 
