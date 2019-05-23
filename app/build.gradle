@@ -1,0 +1,59 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+
+    compileSdkVersion 28
+
+    defaultConfig {
+        applicationId "com.twiceyuan.wxapk"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode getAppVersionCode()
+        versionName getLastTagName()
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        if (flavorName != "release") return
+        outputs.forEach {
+            def buildTypeName = variant.buildType.name
+            def version = "$versionName($versionCode)"
+            it.outputFileName = "WXAPK-${version}-${buildTypeName}.apk"
+        }
+    }
+}
+
+// 根据应用提交记录数来生成版本号
+def getAppVersionCode() {
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'tag', '--list'
+        standardOutput = stdout
+    }
+    return stdout.toString().split("\n").size()
+}
+
+// 获取最新的 tag 名称
+def getLastTagName() {
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--abbrev=0', '--tags'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+dependencies {
+    implementation(fileTree(dir: 'libs', include: ["*.jar"]))
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.android.support:support-v4:28.0.0'
+}
