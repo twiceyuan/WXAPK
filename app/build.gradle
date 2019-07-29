@@ -52,6 +52,10 @@ def getLastTagName() {
     return stdout.toString().trim()
 }
 
+task printVersionInfo() {
+    print "VersionName: ${getLastTagName()}, VersionCode: ${getAppVersionCode()}"
+}
+
 dependencies {
     implementation(fileTree(dir: 'libs', include: ["*.jar"]))
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
