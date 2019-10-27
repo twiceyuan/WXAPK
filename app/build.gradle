@@ -39,7 +39,8 @@ def getAppVersionCode() {
         commandLine 'git', 'tag', '--list'
         standardOutput = stdout
     }
-    return stdout.toString().split("\n").size()
+    // 后面 + 的数字为临时发版没有打 tag 的版本。尽量避免这种情况
+    return stdout.toString().split("\n").size() + 1
 }
 
 // 获取最新的 tag 名称
