@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="file_provider_authority">com.twiceyuan.wxapk.FileProvider</string>
+</resources>

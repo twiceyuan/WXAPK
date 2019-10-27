@@ -5,9 +5,11 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.os.StrictMode
+import androidx.core.content.FileProvider
 import com.twiceyuan.wxapk.Constants.TEMP_APK_PATH
 import java.io.File
 import java.io.FileOutputStream
+
 
 /**
  * Created by twiceYuan on 2018/3/5.
@@ -53,7 +55,8 @@ class InstallerActivity : PermissionHandlerActivity() {
             val newUri = paramUri.convertToInsideUri() ?: return
             val installerIntent = Intent(Intent.ACTION_VIEW)
             installerIntent.setDataAndType(newUri, Constants.INTENT_TYPE_INSTALL)
-            installerIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            installerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            installerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             startActivity(installerIntent)
             finish()
         }
@@ -69,10 +72,11 @@ class InstallerActivity : PermissionHandlerActivity() {
     private fun Uri.convertToInsideUri(): Uri? {
         val inputStream = contentResolver.openInputStream(this) ?: return null
         val tempDir = getExternalFilesDir(TEMP_APK_PATH) ?: return null
-        val tempApkFile = File.createTempFile(lastPathSegment, "apk", tempDir)
+        val tempApkFile = File.createTempFile(lastPathSegment ?: "temp", null, tempDir)
         val outputStream = FileOutputStream(tempApkFile)
         inputStream.copyTo(outputStream)
         inputStream.close()
-        return (Uri.fromFile(tempApkFile))
+        val authority = getString(R.string.file_provider_authority)
+        return FileProvider.getUriForFile(this@InstallerActivity, authority, tempApkFile)
     }
 }
