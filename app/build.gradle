@@ -15,6 +15,16 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        release {
+            String keystore = System.env.WXAPK_KEYSTORE
+            storeFile file(keystore == null ? "/dev/null" : keystore)
+            storePassword System.env.WXAPK_KEYSTORE_PASSWD
+            keyAlias System.env.WXAPK_KEY_ALIAS
+            keyPassword System.env.WXAPK_KEY_PASSWD
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -23,7 +33,7 @@ android {
     }
 
     applicationVariants.all { variant ->
-        if (flavorName != "release") return
+        if (variant.buildType.name != "release") return
         outputs.forEach {
             def buildTypeName = variant.buildType.name
             def version = "$versionName($versionCode)"
@@ -53,8 +63,10 @@ def getLastTagName() {
     return stdout.toString().trim()
 }
 
-task printVersionInfo() {
-    print "VersionName: ${getLastTagName()}, VersionCode: ${getAppVersionCode()}"
+task printVersionInfo {
+    doLast {
+        println "VersionName: ${getLastTagName()}, VersionCode: ${getAppVersionCode()}"
+    }
 }
 
 dependencies {
