@@ -51,20 +51,26 @@ class InstallerActivity : PermissionHandlerActivity() {
     }
 
     private fun install(paramUri: Uri) {
-        fun installAction() {
-            val newUri = paramUri.convertToInsideUri() ?: return
+        fun installAction(uri: Uri) {
+            // val newUri = paramUri.convertToInsideUri() ?: return
             val installerIntent = Intent(Intent.ACTION_VIEW)
-            installerIntent.setDataAndType(newUri, Constants.INTENT_TYPE_INSTALL)
+            installerIntent.setDataAndType(uri, Constants.INTENT_TYPE_INSTALL)
             installerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             installerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             startActivity(installerIntent)
             finish()
         }
 
-        // 微信 7.0 以下使用的是 file uri，需要申请文件读取权限才能读取创建临时文件
         when (paramUri.scheme) {
-            "file" -> requestStorageReadPermission { installAction() }
-            "content" -> installAction()
+            "file" -> {
+                // 微信 7.0 以下使用的是 file uri，需要申请文件读取权限才能读取创建临时文件
+                requestStorageReadPermission { installAction(paramUri) }
+            }
+            "content" -> {
+                // 拷贝内沙盒中提供 Uri，避免使用文件权限
+                val newUri = paramUri.convertToInsideUri() ?: return
+                installAction(newUri)
+            }
         }
     }
 
@@ -72,7 +78,7 @@ class InstallerActivity : PermissionHandlerActivity() {
     private fun Uri.convertToInsideUri(): Uri? {
         val inputStream = contentResolver.openInputStream(this) ?: return null
         val tempDir = getExternalFilesDir(TEMP_APK_PATH) ?: return null
-        val tempApkFile = File.createTempFile(lastPathSegment ?: "temp", null, tempDir)
+        val tempApkFile = File.createTempFile(lastPathSegment ?: "temp", ".apk", tempDir)
         val outputStream = FileOutputStream(tempApkFile)
         inputStream.copyTo(outputStream)
         inputStream.close()
