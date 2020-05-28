@@ -52,7 +52,6 @@ class InstallerActivity : PermissionHandlerActivity() {
 
     private fun install(paramUri: Uri) {
         fun installAction(uri: Uri) {
-            // val newUri = paramUri.convertToInsideUri() ?: return
             val installerIntent = Intent(Intent.ACTION_VIEW)
             installerIntent.setDataAndType(uri, Constants.INTENT_TYPE_INSTALL)
             installerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
