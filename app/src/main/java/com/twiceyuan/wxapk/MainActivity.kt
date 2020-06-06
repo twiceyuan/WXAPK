@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -21,34 +21,30 @@ open class MainActivity : Activity() {
         val componentName = ComponentName(this, MainActivity::class.java)
         val setting = packageManager.getComponentEnabledSetting(componentName)
 
-        fun showSuccess() {
-            toast("设置成功")
-            finish()
+        val isHidden = setting == PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+
+        fun toggleComponentEnable() = when(isHidden) {
+            true -> packageManager.setComponentEnabledSetting(
+                componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+            )
+            false -> packageManager.setComponentEnabledSetting(
+                componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP
+            )
         }
 
-        // 已经被隐藏状态
-        if (setting == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
-            btn_visible_in_launcher.setText(R.string.show_in_launcher)
-            btn_visible_in_launcher.setOnClickListener {
-                // 重新显示
-                packageManager.setComponentEnabledSetting(componentName,
-                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                        PackageManager.DONT_KILL_APP)
-                showSuccess()
-            }
-        } else {
-            // 图标正常显示状态
-            btn_visible_in_launcher.setText(R.string.hide_in_launcher)
-            btn_visible_in_launcher.setOnClickListener {
-                packageManager.setComponentEnabledSetting(componentName,
-                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                        PackageManager.DONT_KILL_APP)
-                showSuccess()
-            }
+        val onClickListener: (View) -> Unit =  {
+            toggleComponentEnable()
+            AppInstance.get(this).toast(R.string.set_success)
+            this.finish()
         }
-    }
 
-    private fun toast(message: String) {
-        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+        // 展示之前的状态，是否已被隐藏
+        switch_hide_icon.isChecked = isHidden
+        switch_hide_icon.setOnClickListener(onClickListener)
+        layout_hide_icon.setOnClickListener(onClickListener)
     }
 }

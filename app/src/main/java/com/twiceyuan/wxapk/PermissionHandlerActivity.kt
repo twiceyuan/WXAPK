@@ -24,23 +24,16 @@ open class PermissionHandlerActivity : Activity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String>,
-            grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (permissionRequestCallback != null && permissionRequestCallback.hashCode() == requestCode) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                permissionRequestCallback?.invoke()
-            } else {
-                Toast.makeText(
-                        applicationContext,
-                        "请允许${getString(R.string.app_name)}读取存储权限",
-                        Toast.LENGTH_SHORT
-                ).show()
-                finish()
-            }
+        if (permissionRequestCallback?.hashCode() != requestCode) return
+
+        if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            AppInstance.get(this).toast(R.string.storage_permission_denied_tip)
+            finish()
+            return
         }
+
+        permissionRequestCallback?.invoke()
     }
 }

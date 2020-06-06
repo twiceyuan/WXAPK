@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.os.StrictMode
 import androidx.core.content.FileProvider
 import com.twiceyuan.wxapk.Constants.TEMP_APK_PATH
 import java.io.File
@@ -24,9 +23,6 @@ class InstallerActivity : PermissionHandlerActivity() {
 
         registerInstallReceiver()
 
-        val builder = StrictMode.VmPolicy.Builder()
-        StrictMode.setVmPolicy(builder.build())
-
         intent?.data?.let { install(it) }
     }
 
@@ -36,7 +32,7 @@ class InstallerActivity : PermissionHandlerActivity() {
         intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
         intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED)
         intentFilter.addDataScheme("package")
-        applicationContext.registerReceiver(ApkInstallCompleteReceiver(), intentFilter)
+        applicationContext.registerReceiver(InstallCompleteReceiver(), intentFilter)
     }
 
     override fun onNewIntent(intent: Intent?) {

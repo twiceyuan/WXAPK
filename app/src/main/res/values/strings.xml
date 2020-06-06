@@ -3,4 +3,11 @@
     <string name="apk_prompt">直接在微信中打开接收到的 APK 即可</string>
     <string name="show_in_launcher">显示 Launcher 图标</string>
     <string name="hide_in_launcher">隐藏 Launcher 图标</string>
+    <string name="set_success">设置成功，因机型差异可能会稍后生效</string>
+    <string name="storage_permission_denied_tip">在低版本上需要存储权限才能正常使用</string>
+    <string name="usage_title">使用方式</string>
+    <string name="usage_desc">在微信中打开接收到的 APK 文件即可</string>
+    <string name="hide_icon_desc">在启动器中隐藏本应用的图标</string>
+    <string name="pref_key_hide_icon">hide_launcher_icon</string>
+    <string name="hide_icon_title">隐藏图标</string>
 </resources>
