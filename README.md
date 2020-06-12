@@ -1,10 +1,15 @@
 # WXAPK
 
-微信安装改名后的 APK 补丁
+![logo](app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png)
+
+在微信中直接安装接收到的 APK 文件
 
 ## 原理
 
-通过 Intent Filter 去 handle apk.1 文件的意图，分发给应用安装器，over。
+微信为了提高恶意软件传播的成本，简单粗暴的在微信中传播的 APK 文件名后缀改为 .apk.1。
+本 App 通过定义 apk.1 的 Intent Filter 来识别这种文件类型，分发给系统的应用安装器进行正常安装。
+
+**请自行确认收到的 APK 文件是可信任的，不要来装来源不明的 APK 文件**
 
 ## 下载
 
