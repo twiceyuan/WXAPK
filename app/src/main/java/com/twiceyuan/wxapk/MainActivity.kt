@@ -5,14 +5,15 @@ import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import kotlinx.android.synthetic.main.activity_main.*
-
+import com.twiceyuan.wxapk.databinding.ActivityMainBinding
 
 open class MainActivity : Activity() {
 
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
 
         setupVisibleInLauncher()
     }
@@ -43,8 +44,10 @@ open class MainActivity : Activity() {
         }
 
         // 展示之前的状态，是否已被隐藏
-        switch_hide_icon.isChecked = isHidden
-        switch_hide_icon.setOnClickListener(onClickListener)
-        layout_hide_icon.setOnClickListener(onClickListener)
+        binding.apply {
+            switchHideIcon.isChecked = isHidden
+            switchHideIcon.setOnClickListener(onClickListener)
+            layoutHideIcon.setOnClickListener(onClickListener)
+        }
     }
 }

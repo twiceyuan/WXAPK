@@ -1,10 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
 
     compileSdkVersion 30
+
+    buildFeatures {
+        viewBinding = true
+    }
 
     defaultConfig {
         applicationId "com.twiceyuan.wxapk"
@@ -26,6 +29,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
         release {
             minifyEnabled true
             signingConfig signingConfigs.release
