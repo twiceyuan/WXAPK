@@ -16,7 +16,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="微信 APK 安装补丁">
+            android:label="微信 APK 安装补丁"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -25,7 +26,8 @@
 
         <activity
             android:name=".InstallerActivity"
-            android:label="安装 APK">
+            android:label="安装 APK"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -45,6 +47,7 @@
 
         <activity
             android:name=".ShadowActivity"
+            android:exported="true"
             android:launchMode="singleTask">
 
             <intent-filter>

@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 android {
 
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     buildFeatures {
         viewBinding = true
@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId "com.twiceyuan.wxapk"
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode getAppVersionCode()
         versionName getLastTagName()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -77,7 +77,6 @@ task printVersionInfo {
 }
 
 dependencies {
-    implementation(fileTree(dir: 'libs', include: ["*.jar"]))
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }
