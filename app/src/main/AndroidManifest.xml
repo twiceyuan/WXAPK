@@ -66,8 +66,8 @@
         </activity>
 
         <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="@string/file_provider_authority"
+            android:name=".AppFileProvider"
+            android:authorities="${applicationId}.AppFileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

@@ -76,7 +76,7 @@ class InstallerActivity : PermissionHandlerActivity() {
         val outputStream = FileOutputStream(tempApkFile)
         inputStream.copyTo(outputStream)
         inputStream.close()
-        val authority = getString(R.string.file_provider_authority)
+        val authority = packageName + AppFileProvider.AUTHORITY_SUFFIX
         return FileProvider.getUriForFile(this@InstallerActivity, authority, tempApkFile)
     }
 }
