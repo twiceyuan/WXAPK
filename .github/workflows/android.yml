@@ -1,0 +1,44 @@
+name: Build & Publish Release APK
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  Gradle:
+    runs-on: ubuntu-latest
+    steps:
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: checkout code
+        uses: actions/checkout@v2
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: setup jdk
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Decrypt the keystore
+        run: |
+          echo "${{ secrets.RELEASE_KEYSTORE }}" > release.keystore.asc
+          gpg -d --passphrase "${{ secrets.RELEASE_KEYSTORE_PASSPHRASE }}" --batch release.keystore.asc > app/release.keystore
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+      - name: Build Release APK
+        run: |
+          export TWICEYUAN_KEYSTORE="release.keystore"
+          export TWICEYUAN_KEYSTORE_PASSWD="${{ secrets.KEYSTORE_PASSWORD }}"
+          export TWICEYUAN_KEY_PASSWD="${{ secrets.KEY_PASSWORD }}"
+          export TWICEYUAN_KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
+
+          ./gradlew assembleRelease
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - run: ls -al "$GITHUB_WORKSPACE"
+      - run: whoami
+      - run: echo "$GITHUB_WORKSPACE"
+      - name: Releasing using Hub
+        uses: kyze8439690/action-release-releaseapk@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+          APP_FOLDER: app
