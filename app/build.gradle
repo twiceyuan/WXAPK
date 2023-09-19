@@ -20,11 +20,18 @@ android {
 
     signingConfigs {
         release {
-            String keystore = System.env.WXAPK_KEYSTORE
-            storeFile file(keystore == null ? "/dev/null" : keystore)
-            storePassword System.env.WXAPK_KEYSTORE_PASSWD
-            keyAlias System.env.WXAPK_KEY_ALIAS
-            keyPassword System.env.WXAPK_KEY_PASSWD
+            if (System.getenv("CI") != null) {
+                storeFile file(System.env.TWICEYUAN_KEYSTORE)
+                storePassword System.env.TWICEYUAN_KEYSTORE_PASSWD
+                keyAlias System.env.TWICEYUAN_KEY_ALIAS
+                keyPassword System.env.TWICEYUAN_KEY_PASSWD
+            } else {
+                String keystore = System.env.WXAPK_KEYSTORE
+                storeFile file(keystore == null ? "/dev/null" : keystore)
+                storePassword System.env.WXAPK_KEYSTORE_PASSWD
+                keyAlias System.env.WXAPK_KEY_ALIAS
+                keyPassword System.env.WXAPK_KEY_PASSWD
+            }
         }
     }
 
