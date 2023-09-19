@@ -2,8 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-
-    compileSdkVersion 31
+    compileSdk = 33
 
     buildFeatures {
         viewBinding = true
@@ -11,8 +10,9 @@ android {
 
     defaultConfig {
         applicationId "com.twiceyuan.wxapk"
-        minSdkVersion 16
-        targetSdkVersion 31
+        minSdk = 16
+        targetSdk = 33
+        namespace = "com.twiceyuan.wxapk"
         versionCode getAppVersionCode()
         versionName getLastTagName()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -37,6 +37,11 @@ android {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     applicationVariants.all { variant ->
