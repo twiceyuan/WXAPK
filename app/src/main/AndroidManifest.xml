@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.twiceyuan.wxapk">
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
@@ -16,8 +17,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="微信 APK 安装补丁"
-            android:exported="true">
+            android:exported="true"
+            android:label="微信 APK 安装补丁">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -26,8 +27,8 @@
 
         <activity
             android:name=".InstallerActivity"
-            android:label="安装 APK"
-            android:exported="true">
+            android:exported="true"
+            android:label="安装 APK">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -42,6 +43,21 @@
                 <data android:mimeType="application/apk.1.1.1.1.1" />
                 <data android:scheme="content" />
                 <data android:host="*" />
+            </intent-filter>
+            <intent-filter tools:targetApi="s">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="content" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:host="*" />
+                <data android:pathSuffix=".apk.1" />
+                <data android:pathSuffix=".apk.1.1" />
+                <data android:pathSuffix=".apk.1.1.1" />
+                <data android:pathSuffix=".apk.1.1.1.1" />
+                <data android:pathSuffix=".apk.1.1.1.1.1" />
             </intent-filter>
         </activity>
 
