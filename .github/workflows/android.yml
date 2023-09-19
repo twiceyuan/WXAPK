@@ -1,0 +1,61 @@
+name: Build & Publish Release APK
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  Gradle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+
+      - name: setup jdk
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Decrypt the keystore
+        run: |
+          echo "${{ secrets.RELEASE_KEYSTORE }}" > release.keystore.asc
+          gpg -d --passphrase "${{ secrets.RELEASE_KEYSTORE_PASSPHRASE }}" --batch release.keystore.asc > app/release.keystore
+
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+
+      - name: Build Release APK
+        run: |
+          export TWICEYUAN_KEYSTORE="release.keystore"
+          export TWICEYUAN_KEYSTORE_PASSWD="${{ secrets.KEYSTORE_PASSWORD }}"
+          export TWICEYUAN_KEY_PASSWD="${{ secrets.KEY_PASSWORD }}"
+          export TWICEYUAN_KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
+
+          ./gradlew assembleRelease
+
+      - name: Create Draft Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
+
+      - name: Upload assets
+        uses: csexton/release-asset-action@v2
+        with:
+          release-url: ${{ steps.create_release.outputs.upload_url }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: "app/build/outputs/apk/release/*-release.apk"
+
+      - name: Publish release
+        uses: eregon/publish-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create_release.outputs.id }}
