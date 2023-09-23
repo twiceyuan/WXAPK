@@ -13,6 +13,12 @@
 
 ## 下载
 
+[Releases](https://github.com/twiceyuan/WXAPK/releases)
+
+或
+
+> Play Store 因不满足 REQUEST_INSTALL_PACKAGES 权限的允许使用情形，已下线
+
 <a href='https://play.google.com/store/apps/details?id=com.twiceyuan.wxapk'>
   <img alt='下载应用，请到 Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/zh-cn_badge_web_generic.png' width='200px' />
 </a>
