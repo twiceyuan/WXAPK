@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     buildFeatures {
         viewBinding = true
@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId "com.twiceyuan.wxapk"
         minSdk = 16
-        targetSdk = 33
+        targetSdk = 34
         namespace = "com.twiceyuan.wxapk"
         versionCode getAppVersionCode()
         versionName getLastTagName()
@@ -51,12 +51,18 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    applicationVariants.all { variant ->
+    applicationVariants.configureEach { variant ->
         if (variant.buildType.name != "release") return
         outputs.forEach {
             def buildTypeName = variant.buildType.name
             def version = "$versionName($versionCode)"
             it.outputFileName = "WXAPK-${version}-${buildTypeName}.apk"
+        }
+    }
+
+    sourceSets.configureEach {
+        languageSettings {
+            languageVersion = "2.0"
         }
     }
 }
@@ -82,13 +88,13 @@ def getLastTagName() {
     return stdout.toString().trim()
 }
 
-task printVersionInfo {
+tasks.register('printVersionInfo') {
     doLast {
         println "VersionName: ${getLastTagName()}, VersionCode: ${getAppVersionCode()}"
     }
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }
