@@ -150,14 +150,21 @@ class FileBrowserActivity : ComponentActivity() {
 
         fileNames.add("..")
 
+        val apkRegex = Regex(".*\\.apk(\\.1){1,10}\$")
         doc.listFiles().forEach {
             val fileName = it.name ?: return@forEach
-            if (it.isDirectory || fileName.contains(".apk.1")) {
-                fileNames.add(fileName)
-                fileDocs[fileName] = it
+            val isApk = it.isFile && apkRegex.matches(fileName)
+            fun displayName() = when {
+                it.isDirectory -> "📁 $fileName"
+                isApk -> "📦 $fileName"
+                else -> error("Unknown file type")
+            }
+            if (it.isDirectory || isApk) {
+                val displayName = displayName()
+                fileNames.add(displayName)
+                fileDocs[displayName] = it
             }
         }
-
         adapter.notifyDataSetChanged()
     }
 }
