@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.twiceyuan.wxapk"
-        minSdk = 16
+        minSdk = 21
         targetSdk = 34
         namespace = "com.twiceyuan.wxapk"
         versionCode getAppVersionCode()
@@ -41,6 +41,7 @@ android {
         }
         release {
             minifyEnabled true
+            shrinkResources true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -96,5 +97,6 @@ tasks.register('printVersionInfo') {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.documentfile:documentfile:1.0.1'
+    implementation 'androidx.activity:activity-ktx:1.9.1'
 }

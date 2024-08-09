@@ -10,4 +10,9 @@
     <string name="hide_icon_desc">在启动器中隐藏本应用的图标</string>
     <string name="pref_key_hide_icon">hide_launcher_icon</string>
     <string name="hide_icon_title">隐藏图标</string>
+    <string name="file_browser">浏览文件</string>
+    <string name="file_browser_desc">浏览设备上的 APK.1 文件，长按重新选择目录</string>
+    <string name="already_root_dir">已经是根目录</string>
+    <string name="prompt_choose_apk_dir">请授权读取 apk.1 文件目录，一般是 WeiXin 或 WeChat</string>
+    <string name="not_support_file">不支持的文件格式</string>
 </resources>

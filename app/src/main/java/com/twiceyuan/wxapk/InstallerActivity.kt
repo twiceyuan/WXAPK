@@ -1,11 +1,12 @@
 package com.twiceyuan.wxapk
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import androidx.core.content.FileProvider
-import com.twiceyuan.wxapk.Constants.TEMP_APK_PATH
 import java.io.File
 import java.io.FileOutputStream
 
@@ -31,7 +32,15 @@ class InstallerActivity : PermissionHandlerActivity() {
         intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
         intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED)
         intentFilter.addDataScheme("package")
-        applicationContext.registerReceiver(InstallCompleteReceiver(), intentFilter)
+        applicationContext.registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val applicationContext = context?.applicationContext ?: return
+                applicationContext.unregisterReceiver(this)
+                applicationContext.getExternalFilesDir(TEMP_APK_PATH)
+                    ?.listFiles()
+                    ?.forEach { it.delete() }
+            }
+        }, intentFilter)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -48,7 +57,7 @@ class InstallerActivity : PermissionHandlerActivity() {
     private fun install(paramUri: Uri) {
         fun installAction(uri: Uri) {
             val installerIntent = Intent(Intent.ACTION_VIEW)
-            installerIntent.setDataAndType(uri, Constants.INTENT_TYPE_INSTALL)
+            installerIntent.setDataAndType(uri, "application/vnd.android.package-archive")
             installerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             installerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             startActivity(installerIntent)
@@ -60,6 +69,7 @@ class InstallerActivity : PermissionHandlerActivity() {
                 // 微信 7.0 以下使用的是 file uri，需要申请文件读取权限才能读取创建临时文件
                 requestStorageReadPermission { installAction(paramUri) }
             }
+
             "content" -> {
                 // 拷贝内沙盒中提供 Uri，避免使用文件权限
                 val newUri = paramUri.convertToInsideUri() ?: return
@@ -72,11 +82,16 @@ class InstallerActivity : PermissionHandlerActivity() {
     private fun Uri.convertToInsideUri(): Uri? {
         val inputStream = contentResolver.openInputStream(this) ?: return null
         val tempDir = getExternalFilesDir(TEMP_APK_PATH) ?: return null
-        val tempApkFile = File.createTempFile(lastPathSegment ?: "temp", ".apk", tempDir)
+        val tempApkFile =
+            File.createTempFile(Uri.encode(lastPathSegment) ?: "temp", ".apk", tempDir)
         val outputStream = FileOutputStream(tempApkFile)
         inputStream.copyTo(outputStream)
         inputStream.close()
         val authority = packageName + AppFileProvider.AUTHORITY_SUFFIX
         return FileProvider.getUriForFile(this@InstallerActivity, authority, tempApkFile)
+    }
+
+    companion object {
+        const val TEMP_APK_PATH = "temp_apk"
     }
 }

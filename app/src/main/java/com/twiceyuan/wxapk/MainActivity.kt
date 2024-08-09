@@ -2,6 +2,7 @@ package com.twiceyuan.wxapk
 
 import android.app.Activity
 import android.content.ComponentName
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -24,12 +25,13 @@ open class MainActivity : Activity() {
 
         val isHidden = setting == PackageManager.COMPONENT_ENABLED_STATE_DISABLED
 
-        fun toggleComponentEnable() = when(isHidden) {
+        fun toggleComponentEnable() = when (isHidden) {
             true -> packageManager.setComponentEnabledSetting(
                 componentName,
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP
             )
+
             false -> packageManager.setComponentEnabledSetting(
                 componentName,
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
@@ -37,9 +39,9 @@ open class MainActivity : Activity() {
             )
         }
 
-        val onClickListener: (View) -> Unit =  {
+        val onClickListener: (View) -> Unit = {
             toggleComponentEnable()
-            AppInstance.get(this).toast(R.string.set_success)
+            toast(R.string.set_success)
             this.finish()
         }
 
@@ -48,6 +50,21 @@ open class MainActivity : Activity() {
             switchHideIcon.isChecked = isHidden
             switchHideIcon.setOnClickListener(onClickListener)
             layoutHideIcon.setOnClickListener(onClickListener)
+        }
+
+        binding.layoutFileBrowser.setOnClickListener {
+            startActivity(Intent(this, FileBrowserActivity::class.java))
+        }
+
+        binding.layoutFileBrowser.setOnLongClickListener {
+            applicationContext.contentResolver.persistedUriPermissions.forEach {
+                applicationContext.contentResolver.releasePersistableUriPermission(
+                    it.uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            }
+            startActivity(Intent(this, FileBrowserActivity::class.java))
+            true
         }
     }
 }

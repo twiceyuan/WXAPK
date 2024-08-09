@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Build
-import android.widget.Toast
 
 /**
  * 权限请求的封装
@@ -29,7 +28,7 @@ open class PermissionHandlerActivity : Activity() {
         if (permissionRequestCallback?.hashCode() != requestCode) return
 
         if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            AppInstance.get(this).toast(R.string.storage_permission_denied_tip)
+            toast(R.string.storage_permission_denied_tip)
             finish()
             return
         }
