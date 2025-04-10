@@ -71,7 +71,10 @@ android {
 // 根据 runner action 编号生成版本号
 def getAppVersionCode() {
     def properties = new Properties()
-    properties.load(new FileInputStream(rootProject.file("local.properties")))
+    def localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        properties.load(new FileInputStream(localPropertiesFile))
+    }
     def version = properties.getProperty("GITHUB_RUN_NUMBER") ?: System.getenv("GITHUB_RUN_NUMBER")
     return version != null ? version.toInteger() : 1
 }
