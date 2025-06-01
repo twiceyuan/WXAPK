@@ -60,12 +60,6 @@ android {
             it.outputFileName = "WXAPK-${version}-${buildTypeName}.apk"
         }
     }
-
-    sourceSets.configureEach {
-        languageSettings {
-            languageVersion = "2.0"
-        }
-    }
 }
 
 // 根据 runner action 编号生成版本号
