@@ -1,6 +1,6 @@
 # WXAPK
 
-![logo](app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png)
+![logo](app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp)
 
 在微信中直接安装接收到的 APK 文件
 
