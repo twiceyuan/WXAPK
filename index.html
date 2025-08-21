@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WXAPK - 直接安装微信接收到的APK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            position: relative;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #000000;
+                color: #ffffff;
+            }
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 600px;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #666666;
+            border-top: 1px solid #e5e5e5;
+            width: 100%;
+        }
+
+        .footer a {
+            color: #07C160;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .footer {
+                color: #999999;
+                border-top-color: #333333;
+            }
+        }
+
+        .github-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #666666;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .github-link:hover {
+            color: #07C160;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .github-link {
+                color: #999999;
+            }
+            .github-link:hover {
+                color: #07C160;
+            }
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #07C160;
+            margin-bottom: 20px;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: #666666;
+            margin-bottom: 50px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .tagline {
+                color: #999999;
+            }
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .btn-content {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        .btn-text {
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-play {
+            background: #07C160;
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-play:hover {
+            background: #06AD56;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(7, 193, 96, 0.3);
+        }
+
+        .btn-apk {
+            background: transparent;
+            color: #07C160;
+            border: 2px solid #07C160;
+        }
+
+        .btn-apk:hover {
+            background: #07C160;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(7, 193, 96, 0.3);
+        }
+
+        .btn-icon {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 3rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .btn {
+                min-width: 200px;
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="https://github.com/twiceyuan/WXAPK" class="github-link" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-github"></i>
+    </a>
+    
+    <div class="container">
+        <div class="logo">WXAPK</div>
+        <div class="tagline">直接安装微信接收到的APK文件</div>
+        
+        <div class="buttons">
+            <a href="#" class="btn btn-play" id="playStoreBtn">
+                <div class="btn-content">
+                    <i class="fab fa-google-play btn-icon"></i>
+                    <span class="btn-text">Play Store 下载</span>
+                </div>
+            </a>
+            <a href="#" class="btn btn-apk" id="apkDownloadBtn">
+                <div class="btn-content">
+                    <i class="fas fa-download btn-icon"></i>
+                    <span class="btn-text">直接下载APK</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; <span id="currentYear"></span> WXAPK. <a href="https://github.com/twiceyuan/WXAPK/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+    </div>
+
+    <script>
+        // 设置当前年份
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // 这里需要添加实际的链接地址
+        document.getElementById('playStoreBtn').href = 'https://play.google.com/store/apps/details?id=com.twiceyuan.wxapk';
+        document.getElementById('apkDownloadBtn').href = 'https://github.com/twiceyuan/WXAPK/releases/latest/download/app-release.apk';
+        
+        // 添加点击统计（可选）
+        document.getElementById('playStoreBtn').addEventListener('click', function() {
+            console.log('Play Store 点击');
+        });
+        
+        document.getElementById('apkDownloadBtn').addEventListener('click', function() {
+            console.log('APK 下载点击');
+        });
+    </script>
+</body>
+</html>
