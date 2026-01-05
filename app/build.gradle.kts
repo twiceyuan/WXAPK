@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
 
     buildFeatures {
         viewBinding = true
@@ -16,8 +16,8 @@ android {
 
     defaultConfig {
         applicationId = "com.twiceyuan.wxapk"
-        minSdk = 21
-        targetSdk = 35
+        minSdk = 23
+        targetSdk = 36
         namespace = "com.twiceyuan.wxapk"
         versionCode = getAppVersionCode()
         versionName = getLastTagName()
@@ -108,6 +108,7 @@ tasks.register("printVersionInfo") {
 dependencies {
     val kotlinVersion = rootProject.extra["kotlinVersion"] as String
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
-    implementation("androidx.documentfile:documentfile:1.0.1")
-    implementation("androidx.activity:activity-ktx:1.9.1")
+    implementation("androidx.documentfile:documentfile:1.1.0")
+    implementation("androidx.activity:activity-ktx:1.12.2")
+    implementation("androidx.core:core:1.17.0")
 }

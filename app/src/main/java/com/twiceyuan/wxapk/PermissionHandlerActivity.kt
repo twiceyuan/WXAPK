@@ -15,12 +15,8 @@ open class PermissionHandlerActivity : Activity() {
     private var permissionRequestCallback: (() -> Unit)? = null
 
     fun requestStorageReadPermission(grantedCallback: () -> Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionRequestCallback = grantedCallback
-            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), grantedCallback.hashCode())
-        } else {
-            grantedCallback()
-        }
+        permissionRequestCallback = grantedCallback
+        requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), grantedCallback.hashCode())
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

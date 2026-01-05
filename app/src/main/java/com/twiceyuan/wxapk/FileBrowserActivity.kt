@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.core.view.WindowCompat
 import androidx.documentfile.provider.DocumentFile
 
 class FileBrowserActivity : ComponentActivity() {
@@ -41,6 +42,7 @@ class FileBrowserActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.enableEdgeToEdge(window)
         setupListView()
         handleInitialUri()
         actionBar?.setDisplayHomeAsUpEnabled(true)
@@ -56,6 +58,7 @@ class FileBrowserActivity : ComponentActivity() {
 
     private fun setupListView() {
         listView = ListView(this)
+        listView.fitsSystemWindows = true
         setContentView(listView)
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fileNames)
         listView.adapter = adapter

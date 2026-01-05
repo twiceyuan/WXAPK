@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"
+        tools:ignore="RequestInstallPackagesPolicy" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
@@ -63,26 +64,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ShadowActivity"
-            android:exported="true"
-            android:launchMode="singleTask">
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="wxapk"
-                    android:path="/settings"
-                    android:scheme="wxapk" />
-
-            </intent-filter>
-
-        </activity>
-        <activity android:name="com.twiceyuan.wxapk.FileBrowserActivity" />
+        <activity android:name=".FileBrowserActivity" />
 
         <provider
             android:name=".AppFileProvider"
