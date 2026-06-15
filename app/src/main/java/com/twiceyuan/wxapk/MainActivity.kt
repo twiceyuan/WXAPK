@@ -5,8 +5,8 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.core.view.WindowCompat
-import com.twiceyuan.wxapk.databinding.ActivityMainBinding
 
 open class MainActivity : Activity() {
 
@@ -14,22 +14,20 @@ open class MainActivity : Activity() {
         const val PLAY_DEVELOPER_URL = "https://play.google.com/store/apps/developer?id=twiceYuan"
     }
 
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.enableEdgeToEdge(window)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
         setupVisibleInLauncher()
     }
 
     private fun setupVisibleInLauncher() {
-        binding.layoutFileBrowser.setOnClickListener {
+        findViewById<View>(R.id.layout_file_browser).setOnClickListener {
             startActivity(Intent(this, FileBrowserActivity::class.java))
         }
 
-        binding.layoutFileBrowser.setOnLongClickListener {
+        findViewById<View>(R.id.layout_file_browser).setOnLongClickListener {
             applicationContext.contentResolver.persistedUriPermissions.forEach {
                 applicationContext.contentResolver.releasePersistableUriPermission(
                     it.uri,
@@ -40,7 +38,7 @@ open class MainActivity : Activity() {
             true
         }
 
-        binding.layoutAboutAuthor.setOnClickListener {
+        findViewById<View>(R.id.layout_about_author).setOnClickListener {
             openPlayDeveloperPage()
         }
     }

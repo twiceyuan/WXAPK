@@ -1,6 +1,6 @@
 package com.twiceyuan.wxapk
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -9,12 +9,14 @@ import android.provider.DocumentsContract
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import androidx.activity.ComponentActivity
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.view.WindowCompat
 import androidx.documentfile.provider.DocumentFile
 
-class FileBrowserActivity : ComponentActivity() {
+class FileBrowserActivity : Activity() {
+
+    private companion object {
+        const val REQUEST_CHOOSE_EXTERNAL = 1
+    }
 
     private val initialUri = DocumentsContract.buildTreeDocumentUri(
         /* authority = */ "com.android.externalstorage.documents",
@@ -77,33 +79,30 @@ class FileBrowserActivity : ComponentActivity() {
 
         // 否则触发选择路径
         toast(R.string.prompt_choose_apk_dir)
-        val chooseExternalContract = getChooseExternalContract()
-        registerForActivityResult(chooseExternalContract, activityResultRegistry) { uri ->
-            uri ?: return@registerForActivityResult
-            applicationContext.contentResolver.takePersistableUriPermission(
-                uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
-            val tree = DocumentFile.fromTreeUri(this, uri) ?: return@registerForActivityResult
-            displayFiles(tree)
-        }.launch(initialUri)
+        startActivityForResult(createChooseExternalIntent(initialUri), REQUEST_CHOOSE_EXTERNAL)
     }
 
-    private fun getChooseExternalContract() = object : ActivityResultContract<Uri?, Uri?>() {
-        override fun createIntent(context: Context, input: Uri?): Intent {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-                if (input != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    putExtra(DocumentsContract.EXTRA_INITIAL_URI, input)
-                }
+    private fun createChooseExternalIntent(input: Uri?): Intent {
+        return Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+            if (input != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                putExtra(DocumentsContract.EXTRA_INITIAL_URI, input)
             }
-            return intent
         }
+    }
 
-        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-            return intent?.data
-        }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        if (requestCode != REQUEST_CHOOSE_EXTERNAL) return
+
+        val uri = intent?.data ?: return
+        applicationContext.contentResolver.takePersistableUriPermission(
+            uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
+        val tree = DocumentFile.fromTreeUri(this, uri) ?: return
+        displayFiles(tree)
     }
 
     // 处理列表点击事件

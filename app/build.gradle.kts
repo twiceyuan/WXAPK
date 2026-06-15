@@ -8,10 +8,6 @@ plugins {
 android {
     compileSdk = 36
 
-    buildFeatures {
-        viewBinding = true
-    }
-
     defaultConfig {
         applicationId = "com.twiceyuan.wxapk"
         minSdk = 23
@@ -50,6 +46,16 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
+            )
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += setOf(
+                "DebugProbesKt.bin",
+                "META-INF/*.version",
+                "META-INF/androidx/**/LICENSE.txt",
             )
         }
     }
@@ -102,6 +108,5 @@ tasks.register("printVersionInfo") {
 dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.documentfile)
-    implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.core)
 }
