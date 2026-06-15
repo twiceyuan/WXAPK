@@ -1,10 +1,8 @@
-import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
+    alias(libs.plugins.android.application)
 }
 
 android {
@@ -50,7 +48,7 @@ android {
             isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
+                getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
@@ -61,14 +59,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    applicationVariants.configureEach {
-        if (buildType.name != "release") return@configureEach
-        outputs.forEach { output ->
-            val buildTypeName = buildType.name
-            val version = "${versionName}-${versionCode}"
-            if (output is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
-                output.outputFileName = "WXAPK-${version}-${buildTypeName}.apk"
-            }
+}
+
+androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        variant.outputs.forEach { output ->
+            val version = "${getLastTagName()}-${getAppVersionCode()}"
+            output.outputFileName.set("WXAPK-${version}-${variant.name}.apk")
         }
     }
 }
@@ -88,12 +85,9 @@ fun getAppVersionCode(): Int {
 // 获取最新的 tag 名称
 fun getLastTagName(): String {
     return try {
-        val stdout = ByteArrayOutputStream()
-        project.exec {
+        providers.exec {
             commandLine("git", "describe", "--abbrev=0", "--tags")
-            standardOutput = stdout
-        }
-        stdout.toString().trim()
+        }.standardOutput.asText.get().trim()
     } catch (e: Exception) {
         "v1.0.0"
     }
@@ -106,9 +100,8 @@ tasks.register("printVersionInfo") {
 }
 
 dependencies {
-    val kotlinVersion = rootProject.extra["kotlinVersion"] as String
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
-    implementation("androidx.documentfile:documentfile:1.1.0")
-    implementation("androidx.activity:activity-ktx:1.12.2")
-    implementation("androidx.core:core:1.17.0")
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.androidx.documentfile)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.core)
 }

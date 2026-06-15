@@ -1,0 +1,16 @@
+[versions]
+agp = "9.2.1"
+kotlin = "2.4.0"
+activity = "1.12.2"
+core = "1.17.0"
+documentfile = "1.1.0"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+[libraries]
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
+androidx-core = { module = "androidx.core:core", version.ref = "core" }
+androidx-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "documentfile" }
