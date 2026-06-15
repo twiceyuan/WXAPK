@@ -5,8 +5,11 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.format.Formatter
 import android.view.View
+import android.widget.TextView
 import androidx.core.view.WindowCompat
+import java.io.File
 
 open class MainActivity : Activity() {
 
@@ -20,6 +23,11 @@ open class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
 
         setupVisibleInLauncher()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshInstallCacheSize()
     }
 
     private fun setupVisibleInLauncher() {
@@ -38,9 +46,35 @@ open class MainActivity : Activity() {
             true
         }
 
+        findViewById<View>(R.id.layout_clear_install_cache).setOnClickListener {
+            clearInstallCache()
+            refreshInstallCacheSize()
+            toast(R.string.install_cache_cleared)
+        }
+
         findViewById<View>(R.id.layout_about_author).setOnClickListener {
             openPlayDeveloperPage()
         }
+    }
+
+    private fun refreshInstallCacheSize() {
+        val cacheSize = getInstallCacheDir()?.size() ?: 0L
+        val formattedSize = Formatter.formatFileSize(this, cacheSize)
+        findViewById<TextView>(R.id.text_install_cache_size).text =
+            getString(R.string.install_cache_size, formattedSize)
+    }
+
+    private fun clearInstallCache() {
+        getInstallCacheDir()?.listFiles()?.forEach { it.deleteRecursively() }
+    }
+
+    private fun getInstallCacheDir(): File? =
+        getExternalFilesDir(InstallerActivity.TEMP_APK_PATH)
+
+    private fun File.size(): Long {
+        if (!exists()) return 0L
+        if (isFile) return length()
+        return listFiles()?.sumOf { it.size() } ?: 0L
     }
 
     private fun openPlayDeveloperPage() {
