@@ -12,6 +12,9 @@
     <string name="hide_icon_title">隐藏图标</string>
     <string name="file_browser">浏览文件</string>
     <string name="file_browser_desc">浏览设备上的 APK.1 文件，长按重新选择目录</string>
+    <string name="about_author">关于作者</string>
+    <string name="about_author_desc">查看 twiceYuan 的 Play 开发者页面</string>
+    <string name="no_browser_found">未找到可打开链接的应用</string>
     <string name="already_root_dir">已经是根目录</string>
     <string name="prompt_choose_apk_dir">请授权读取 apk.1 文件目录，一般是 WeiXin 或 WeChat</string>
     <string name="not_support_file">不支持的文件格式</string>
