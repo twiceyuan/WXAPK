@@ -1,6 +1,9 @@
 package com.twiceyuan.wxapk
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import androidx.core.content.FileProvider
@@ -18,7 +21,24 @@ class InstallerActivity : PermissionHandlerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        registerInstallReceiver()
+
         intent?.data?.let { install(it) }
+    }
+
+    // 注册安装结束的事件监听，用于清除缓存文件
+    private fun registerInstallReceiver() {
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
+        intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED)
+        intentFilter.addDataScheme("package")
+        applicationContext.registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val applicationContext = context?.applicationContext ?: return
+                applicationContext.unregisterReceiver(this)
+                clearTempApkFiles(applicationContext)
+            }
+        }, intentFilter)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -36,9 +56,10 @@ class InstallerActivity : PermissionHandlerActivity() {
         fun installAction(uri: Uri) {
             val installerIntent = Intent(Intent.ACTION_VIEW)
             installerIntent.setDataAndType(uri, "application/vnd.android.package-archive")
+            installerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             installerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            installerIntent.putExtra(Intent.EXTRA_RETURN_RESULT, true)
-            startActivityForResult(installerIntent, REQUEST_INSTALL_APK)
+            startActivity(installerIntent)
+            finish()
         }
 
         when (paramUri.scheme) {
@@ -55,16 +76,8 @@ class InstallerActivity : PermissionHandlerActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_INSTALL_APK) {
-            clearTempApkFiles()
-            finish()
-        }
-    }
-
-    private fun clearTempApkFiles() {
-        getExternalFilesDir(TEMP_APK_PATH)
+    private fun clearTempApkFiles(context: Context) {
+        context.getExternalFilesDir(TEMP_APK_PATH)
             ?.listFiles()
             ?.forEach { it.delete() }
     }
@@ -84,6 +97,5 @@ class InstallerActivity : PermissionHandlerActivity() {
 
     companion object {
         const val TEMP_APK_PATH = "temp_apk"
-        const val REQUEST_INSTALL_APK = 1001
     }
 }
